@@ -1,4 +1,5 @@
 package com.project.task_management.service;
+import com.project.task_management.dto.TaskCreationDto;
 import com.project.task_management.model.Task;
 import com.project.task_management.model.User;
 import com.project.task_management.repository.TaskRepository;
@@ -27,7 +28,7 @@ public class TaskService {
         Task task = new Task();
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
-        task.setStatus(Task.TaskStatus.TODO);
+        task.setStatus(Task.TaskStatus.IN_PROGRESS);
         task.setCreatedBy(user);
 
         return taskRepository.save(task);
