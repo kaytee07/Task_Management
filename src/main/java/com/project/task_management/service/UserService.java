@@ -1,5 +1,6 @@
 package com.project.task_management.service;
 import com.project.task_management.dto.UserRegistrationDto;
+import com.project.task_management.dto.UserUpdateDto;
 import com.project.task_management.model.User;
 import com.project.task_management.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
