@@ -1,5 +1,6 @@
 package com.project.task_management.service;
 import com.project.task_management.dto.TaskCreationDto;
+import com.project.task_management.dto.TaskUpdateDto;
 import com.project.task_management.model.Task;
 import com.project.task_management.model.User;
 import com.project.task_management.repository.TaskRepository;
