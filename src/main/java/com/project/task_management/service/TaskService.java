@@ -1,6 +1,9 @@
 package com.project.task_management.service;
+
 import com.project.task_management.dto.TaskCreationDto;
+import com.project.task_management.dto.TaskDto;
 import com.project.task_management.dto.TaskUpdateDto;
+import com.project.task_management.dto.UserDto;
 import com.project.task_management.model.Task;
 import com.project.task_management.model.User;
 import com.project.task_management.repository.TaskRepository;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -22,7 +26,7 @@ public class TaskService {
     }
 
     @Transactional
-    public Task createTask(UUID userId, TaskCreationDto taskDto) {
+    public TaskDto createTask(UUID userId, TaskCreationDto taskDto) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -32,11 +36,12 @@ public class TaskService {
         task.setStatus(Task.TaskStatus.IN_PROGRESS);
         task.setCreatedBy(user);
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+        return new TaskDto(savedTask);
     }
 
     @Transactional
-    public Task updateTask(UUID taskId, UUID userId, TaskUpdateDto updateDto) {
+    public TaskDto updateTask(UUID taskId, UUID userId, TaskUpdateDto updateDto) {
         Task task = getTaskIfOwner(taskId, userId);
 
         if (updateDto.getTitle() != null) {
@@ -49,7 +54,8 @@ public class TaskService {
             task.setStatus(updateDto.getStatus());
         }
 
-        return taskRepository.save(task);
+        Task updatedTask = taskRepository.save(task);
+        return new TaskDto(updatedTask);
     }
 
     @Transactional
@@ -58,22 +64,29 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    public Task getTaskById(UUID taskId, UUID userId) {
-        return getTaskIfOwner(taskId, userId);
+    public TaskDto getTaskById(UUID taskId, UUID userId) {
+        Task task = getTaskIfOwner(taskId, userId);
+        return new TaskDto(task);
     }
 
-    public List<Task> getUserTasks(UUID userId) {
+    public List<TaskDto> getUserTasks(UUID userId) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        return taskRepository.findByCreatedBy(user);
+        List<Task> tasks = taskRepository.findByCreatedBy(user);
+        return tasks.stream()
+                .map(TaskDto::new)
+                .collect(Collectors.toList());
     }
 
-    public List<Task> getUserTasksByStatus(UUID userId, Task.TaskStatus status) {
+    public List<TaskDto> getUserTasksByStatus(UUID userId, Task.TaskStatus status) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        return taskRepository.findByCreatedByAndStatus(user, status);
+        List<Task> tasks = taskRepository.findByCreatedByAndStatus(user, status);
+        return tasks.stream()
+                .map(TaskDto::new)
+                .collect(Collectors.toList());
     }
 
     private Task getTaskIfOwner(UUID taskId, UUID userId) {

@@ -1,8 +1,12 @@
 package com.project.task_management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -12,6 +16,8 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 36)
     private UUID id;
 
     @Column(nullable = false)
@@ -30,6 +36,7 @@ public class Task {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Instant createdAt;
 
     @UpdateTimestamp

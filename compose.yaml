@@ -1,1 +1,43 @@
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: task_management
+      MYSQL_ROOT_PASSWORD: Hhdh573)&@/dg
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - spring_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pHhdh573)&@/dg"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  springboot-app:
+    build: .
+    container_name: my-taskmanagement-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/task_management?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Hhdh573)&@/dg
+    networks:
+      - spring_net
+
+
+volumes:
+  mysql_data:
+
+networks:
+  spring_net:
+
+

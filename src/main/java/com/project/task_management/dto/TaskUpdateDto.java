@@ -9,7 +9,7 @@ public class TaskUpdateDto {
     private String title;
     private String description;
     private Task.TaskStatus status;
-    private Instant deadline;
+
 
     public String getTitle() {
         return title;
@@ -24,10 +24,6 @@ public class TaskUpdateDto {
     }
 
 
-    public Instant getDeadline() {
-        return deadline;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -40,8 +36,4 @@ public class TaskUpdateDto {
         this.status = status;
     }
 
-
-    public void setDeadline(Instant deadline) {
-        this.deadline = deadline;
-    }
 }

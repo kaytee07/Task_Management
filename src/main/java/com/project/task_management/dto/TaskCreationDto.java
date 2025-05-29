@@ -10,7 +10,6 @@ public class TaskCreationDto {
     private Task.TaskStatus status;
     private UUID createdById;
 
-    // Getters and Setters for all fields
     public String getTitle() {
         return title;
     }
