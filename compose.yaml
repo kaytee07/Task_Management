@@ -1,43 +1,39 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_db
+  mysql-db:
+    image: mysql:latest
+    container_name: my-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'Hhdh573)&@/dg'
+      MYSQL_DATABASE: task_management
+      MYSQL_USER: winfulTaylor
+      MYSQL_PASSWORD: Aryeequaye
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_DATABASE: task_management
-      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      MYSQL_ROOT_HOST: '%'
     volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - spring_net
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pHhdh573)&@/dg"]
-      interval: 5s
-      timeout: 10s
-      retries: 10
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  springboot-app:
-    build: .
-    container_name: my-taskmanagement-app
-    ports:
-      - "8080:8080"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
-      mysql:
+      mysql-db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-    networks:
-      - spring_net
-
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/task_management
+      SPRING_DATASOURCE_USERNAME: winfulTaylor
+      SPRING_DATASOURCE_PASSWORD: Aryeequaye
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
 
 volumes:
-  mysql_data:
+  mysql-data:
 
-networks:
-  spring_net:
 
 
