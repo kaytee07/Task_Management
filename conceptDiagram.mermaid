@@ -1,0 +1,57 @@
+graph TB
+
+%% External Clients
+    subgraph "HTTP Client"
+        WebBrowser[Web Browser]
+        Postman[Postman]
+        MobileApp[Mobile App]
+    end
+
+%% Spring Boot Layers
+    TaskController["TaskController\n@RestController"]
+    TaskService["TaskService\n@Service"]
+    TaskRepository["TaskRepository\n@Repository"]
+    TaskEntity["Task Entity\n@Entity\nid: Long\ntitle: String\nstatus: Enum"]
+
+%% Databases
+    PostgreSQL[(PostgreSQL\nTasks Table)]
+    H2[(H2\nIn-Memory DB)]
+
+%% Spring IoC Container
+    subgraph "Spring IoC Container"
+        DI[Dependency Injection]
+        AutoConf[Auto-Configuration]
+        BeanMgmt[Bean Management]
+    end
+
+%% Connections
+    WebBrowser --> TaskController
+    Postman --> TaskController
+    MobileApp --> TaskController
+
+    TaskController -->|DI Injected| TaskService
+    TaskService -->|DI Injected| TaskRepository
+    TaskRepository --> TaskEntity
+    TaskEntity --> PostgreSQL
+    TaskEntity --> H2
+
+    DI --> TaskController
+    DI --> TaskService
+    DI --> TaskRepository
+    DI --> TaskEntity
+
+    AutoConf --> TaskController
+    AutoConf --> TaskService
+    AutoConf --> TaskRepository
+    AutoConf --> TaskEntity
+
+    BeanMgmt --> TaskController
+    BeanMgmt --> TaskService
+    BeanMgmt --> TaskRepository
+    BeanMgmt --> TaskEntity
+
+%% Legend as a dummy node
+    Legend["Legend:
+DI = Dependency Injection
+IoC = Inversion of Control
+JPA = Java Persistence API"]
